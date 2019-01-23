@@ -30,6 +30,16 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        #spectate radio button
+        self.spectateRadio = QtWidgets.QRadioButton(self.centralwidget)
+        self.spectateRadio.setGeometry(QtCore.QRect(220, 100, 120, 20))
+        self.spectateRadio.setObjectName("spectateRadio")
+
+        #player radio button
+        self.playerRadio = QtWidgets.QRadioButton(self.centralwidget)
+        self.playerRadio.setGeometry(QtCore.QRect(550, 100, 120, 20))
+        self.playerRadio.setObjectName("playerRadio")
+        self.userType = "P" #monitor if user wants to be a spectator or a player
 
         #join button
         self.joinButton = QtWidgets.QPushButton(self.centralwidget)
@@ -62,6 +72,8 @@ class Ui_MainWindow(object):
         self.fetchButton.clicked.connect(self.fetch_id)
         self.browseButton.clicked.connect(self.set_path)
         self.joinButton.clicked.connect(self.join_match)
+        self.spectateRadio.toggled.connect(self.to_spec)
+        self.playerRadio.toggled.connect(self.to_play)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -71,6 +83,9 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "EchoVR Location"))
         self.browseButton.setText(_translate("MainWindow", "Browse"))
         self.label_2.setText(_translate("MainWindow", "Match ID"))
+        self.spectateRadio.setText(_translate("MainWindow", "Spectator"))
+        self.playerRadio.setText(_translate("MainWindow", "Player"))
+        self.playerRadio.toggle()
 
         #will initialise the default path if one does not exist
         try:
@@ -81,6 +96,14 @@ class Ui_MainWindow(object):
         except:
             self.path = "C:\\Program Files\\Oculus\\Software\\Software\\ready-at-dawn-echo-arena\\bin\\win7\\echovr.exe"
         self.browseEntry.setText(_translate("MainWindow",self.path))
+
+    #change userType to spectator
+    def to_spec(self):
+        userType = "S"
+
+    #change userType to Spectator
+    def to_play(self):
+        userType = "P"
 
     #changes the matchid entry box to hold the sessionid of the current match
     def fetch_id(self):
@@ -100,17 +123,29 @@ class Ui_MainWindow(object):
             pathFile.write(fileName)
             pathFile.close()
 
+    #gets command based off state of app
+    def get_command():
+        if userType == "P":
+            if self.matchEntry.text() == "":
+                command = "\"" + self.path + "\"" + " -http"
+            else:
+                command = "\"" + self.path + "\""  + " -http -lobbyid " + self.matchEntry.text()
+                print(self.matchEntry)
+        else:
+            if self.matchEntry.text() == "":
+                command = "\"" + self.path + "\"" + "-spectatorstream -http"
+            else:
+                command = "\"" + self.path + "\""  + " -spectatorstream -http -lobbyid " + self.matchEntry.text()
+        return command
+
     #joins match from a passed sessionid
     def join_match(self):
         self.path = self.browseEntry.text()
         if not self.path:
             self.set_path()
+
         if "echovr.exe" in self.path:
-            if self.matchEntry.text() == "":
-                command = "\"" + self.path + "\"" + " -spectatorstream -http"
-            else:
-                command = "\"" + self.path + "\""  + " -spectatorstream -http -lobbyid " + self.matchEntry.text()
-                print(self.matchEntry)
+            command = get_command()
             try:
                 subprocess.call('taskkill /IM echovr.exe')
                 subprocess.Popen(command)
