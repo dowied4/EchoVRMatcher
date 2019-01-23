@@ -44,10 +44,11 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-        self.fetchButton.clicked.connect(self.fetchid)
+        self.fetchButton.clicked.connect(self.fetch_id)
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.browseButton.clicked.connect(self.set_path)
+        self.joinButton.clicked.connect(self.join_match)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -66,8 +67,11 @@ class Ui_MainWindow(object):
             self.path = "C:\\Program Files\\Oculus\\Software\\Software\\ready-at-dawn-echo-arena\\bin\\win7\\echovr.exe"
         self.browseEntry.setText(_translate("MainWindow",self.path))
 
-    def fetchid(self):
-        game_state = echovr_api.fetch_state()
+    def fetch_id(self):
+        try:
+            game_state = echovr_api.fetch_state()
+        except:
+            return
         print(game_state.sessionid)
         self.matchEntry.setText(game_state.sessionid)
 
@@ -79,10 +83,29 @@ class Ui_MainWindow(object):
             pathFile.write(fileName)
             pathFile.close()
 
+    def join_match(self):
+        print(self.path)
+        if not self.path:
+            self.set_path()
+        if "echovr.exe" in self.path:
+            if self.matchEntry.text() == "":
+                command = "\"" + self.path + "\"" + " -spectatorstream -http"
+            else:
+                command = self.path   + " -spectatorstream -http -lobbyid " + self.matchEntry.text()
+                print(self.matchEntry)
+            try:
+                subprocess.call('taskkill /IM echovr.exe')
+                print(command)
+                subprocess.Popen(command)
+
+            except SystemError as e:
+                print("unable to run exe")
+
 
 
 if __name__ == "__main__":
     import sys
+    import subprocess
     import echovr_api
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
