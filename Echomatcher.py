@@ -26,12 +26,12 @@ class Ui_MainWindow(object):
         self.fetchButton = QtWidgets.QPushButton(self.centralwidget)
         self.fetchButton.setGeometry(QtCore.QRect(530, 310, 111, 41))
         self.fetchButton.setObjectName("fetchButton")
-        self.plainTextEdit = QtWidgets.QPlainTextEdit(self.centralwidget)
-        self.plainTextEdit.setGeometry(QtCore.QRect(220, 310, 311, 41))
-        self.plainTextEdit.setObjectName("plainTextEdit")
-        self.plainTextEdit_2 = QtWidgets.QPlainTextEdit(self.centralwidget)
-        self.plainTextEdit_2.setGeometry(QtCore.QRect(220, 200, 311, 41))
-        self.plainTextEdit_2.setObjectName("plainTextEdit_2")
+        self.matchEntry = QtWidgets.QPlainTextEdit(self.centralwidget)
+        self.matchEntry.setGeometry(QtCore.QRect(220, 310, 311, 41))
+        self.matchEntry.setObjectName("matchEntry")
+        self.browseEntry = QtWidgets.QPlainTextEdit(self.centralwidget)
+        self.browseEntry.setGeometry(QtCore.QRect(220, 200, 311, 41))
+        self.browseEntry.setObjectName("browseEntry")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(320, 170, 111, 16))
         self.label.setObjectName("label")
@@ -45,6 +45,7 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.fetchButton.clicked.connect(self.fetchid)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -58,13 +59,17 @@ class Ui_MainWindow(object):
         self.browseButton.setText(_translate("MainWindow", "Browse"))
         self.label_2.setText(_translate("MainWindow", "Match ID"))
 
+    def fetchid(self):
+        game_state = echovr_api.fetch_state()
+        matchEntry.setText(game_state.sessionid)
+        return
 
 if __name__ == "__main__":
     import sys
+    import echovr_api
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
