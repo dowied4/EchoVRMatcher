@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+#initialise gui and initial funtion calls for button presses
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -19,24 +20,9 @@ class Ui_MainWindow(object):
         MainWindow.setFixedSize(800,600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.joinButton = QtWidgets.QPushButton(self.centralwidget)
-        self.joinButton.setGeometry(QtCore.QRect(260, 430, 251, 91))
-        self.joinButton.setObjectName("joinButton")
-        self.fetchButton = QtWidgets.QPushButton(self.centralwidget)
-        self.fetchButton.setGeometry(QtCore.QRect(530, 310, 111, 41))
-        self.fetchButton.setObjectName("fetchButton")
-        self.matchEntry = QtWidgets.QLineEdit(self.centralwidget)
-        self.matchEntry.setGeometry(QtCore.QRect(220, 310, 311, 41))
-        self.matchEntry.setObjectName("matchEntry")
-        self.browseEntry = QtWidgets.QLineEdit(self.centralwidget)
-        self.browseEntry.setGeometry(QtCore.QRect(220, 200, 311, 41))
-        self.browseEntry.setObjectName("browseEntry")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(320, 170, 111, 16))
         self.label.setObjectName("label")
-        self.browseButton = QtWidgets.QPushButton(self.centralwidget)
-        self.browseButton.setGeometry(QtCore.QRect(530, 200, 111, 41))
-        self.browseButton.setObjectName("browseButton")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(340, 290, 55, 16))
         self.label_2.setObjectName("label_2")
@@ -44,20 +30,49 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-        self.fetchButton.clicked.connect(self.fetch_id)
+
+        #join button
+        self.joinButton = QtWidgets.QPushButton(self.centralwidget)
+        self.joinButton.setGeometry(QtCore.QRect(260, 430, 251, 91))
+        self.joinButton.setObjectName("joinButton")
+
+        #fetch button
+        self.fetchButton = QtWidgets.QPushButton(self.centralwidget)
+        self.fetchButton.setGeometry(QtCore.QRect(530, 310, 111, 41))
+        self.fetchButton.setObjectName("fetchButton")
+
+        #entry for match id
+        self.matchEntry = QtWidgets.QLineEdit(self.centralwidget)
+        self.matchEntry.setGeometry(QtCore.QRect(220, 310, 311, 41))
+        self.matchEntry.setObjectName("matchEntry")
+
+        #entry box for the path for the executable
+        self.browseEntry = QtWidgets.QLineEdit(self.centralwidget)
+        self.browseEntry.setGeometry(QtCore.QRect(220, 200, 311, 41))
+        self.browseEntry.setObjectName("browseEntry")
+
+        #button to browse for path
+        self.browseButton = QtWidgets.QPushButton(self.centralwidget)
+        self.browseButton.setGeometry(QtCore.QRect(530, 200, 111, 41))
+        self.browseButton.setObjectName("browseButton")
+
+        #method calls
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.fetchButton.clicked.connect(self.fetch_id)
         self.browseButton.clicked.connect(self.set_path)
         self.joinButton.clicked.connect(self.join_match)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.joinButton.setText(_translate("MainWindow", "Join Match"))
+        self.joinButton.setText(_translate("MainWindow", "LAUNCH"))
         self.fetchButton.setText(_translate("MainWindow", "Get Match ID"))
         self.label.setText(_translate("MainWindow", "EchoVR Location"))
         self.browseButton.setText(_translate("MainWindow", "Browse"))
         self.label_2.setText(_translate("MainWindow", "Match ID"))
+
+        #will initialise the default path if one does not exist
         try:
             file = open("pathFile.txt","r")
             self.path = file.read()
@@ -67,6 +82,7 @@ class Ui_MainWindow(object):
             self.path = "C:\\Program Files\\Oculus\\Software\\Software\\ready-at-dawn-echo-arena\\bin\\win7\\echovr.exe"
         self.browseEntry.setText(_translate("MainWindow",self.path))
 
+    #changes the matchid entry box to hold the sessionid of the current match
     def fetch_id(self):
         try:
             game_state = echovr_api.fetch_state()
@@ -75,6 +91,7 @@ class Ui_MainWindow(object):
         print(game_state.sessionid)
         self.matchEntry.setText(game_state.sessionid)
 
+    #sets the path of the executable
     def set_path(self):
         fileName, _= QtWidgets.QFileDialog.getOpenFileName(None, "Select Match ID file","", "exe Files (*.exe)")
         if fileName:
@@ -83,23 +100,25 @@ class Ui_MainWindow(object):
             pathFile.write(fileName)
             pathFile.close()
 
+    #joins match from a passed sessionid
     def join_match(self):
-        print(self.path)
+        self.path = self.browseEntry.text()
         if not self.path:
             self.set_path()
         if "echovr.exe" in self.path:
             if self.matchEntry.text() == "":
                 command = "\"" + self.path + "\"" + " -spectatorstream -http"
             else:
-                command = self.path   + " -spectatorstream -http -lobbyid " + self.matchEntry.text()
+                command = "\"" + self.path + "\""  + " -spectatorstream -http -lobbyid " + self.matchEntry.text()
                 print(self.matchEntry)
             try:
                 subprocess.call('taskkill /IM echovr.exe')
-                print(command)
                 subprocess.Popen(command)
 
             except SystemError as e:
                 print("unable to run exe")
+        else:
+            raise Exception('This exe is not EchoVR!')
 
 
 
