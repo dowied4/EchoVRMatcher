@@ -99,11 +99,11 @@ class Ui_MainWindow(object):
 
     #change userType to spectator
     def to_spec(self):
-        userType = "S"
+        self.userType = "S"
 
     #change userType to Spectator
     def to_play(self):
-        userType = "P"
+        self.userType = "P"
 
     #changes the matchid entry box to hold the sessionid of the current match
     def fetch_id(self):
@@ -124,8 +124,8 @@ class Ui_MainWindow(object):
             pathFile.close()
 
     #gets command based off state of app
-    def get_command():
-        if userType == "P":
+    def get_command(self):
+        if self.userType == "P":
             if self.matchEntry.text() == "":
                 command = "\"" + self.path + "\"" + " -http"
             else:
@@ -145,7 +145,7 @@ class Ui_MainWindow(object):
             self.set_path()
 
         if "echovr.exe" in self.path:
-            command = get_command()
+            command = self.get_command()
             try:
                 subprocess.call('taskkill /IM echovr.exe')
                 subprocess.Popen(command)
