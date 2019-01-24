@@ -19,39 +19,51 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(320, 170, 111, 16))
+        self.label.setGeometry(QtCore.QRect(320, 170, 140, 16))
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(340, 290, 55, 16))
+        self.label_2.setGeometry(QtCore.QRect(340, 290, 140, 16))
         self.label_2.setObjectName("label_2")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
-        #spectate radio button
-        self.spectateRadio = QtWidgets.QRadioButton(self.centralwidget)
-        self.spectateRadio.setGeometry(QtCore.QRect(220, 100, 120, 20))
-        self.spectateRadio.setObjectName("spectateRadio")
-
-        #player radio button
-        self.playerRadio = QtWidgets.QRadioButton(self.centralwidget)
-        self.playerRadio.setGeometry(QtCore.QRect(550, 100, 120, 20))
-        self.playerRadio.setObjectName("playerRadio")
-        self.userType = "P" #monitor if user wants to be a spectator or a player
-
-        #set button font
+        #set font
         font = QtGui.QFont()
         font.setFamily("Helvetica")
         font.setPointSize(10)
         font.setBold(True)
         font.setWeight(60)
 
+        #set label font
+        self.label.setFont(font)
+        self.label_2.setFont(font)
+
+        #spectate radio button
+        self.spectateRadio = QtWidgets.QRadioButton(self.centralwidget)
+        self.spectateRadio.setGeometry(QtCore.QRect(220, 100, 120, 20))
+        self.spectateRadio.setObjectName("spectateRadio")
+        self.spectateRadio.setFont(font)
+
+        #player radio button
+        self.playerRadio = QtWidgets.QRadioButton(self.centralwidget)
+        self.playerRadio.setGeometry(QtCore.QRect(550, 100, 120, 20))
+        self.playerRadio.setObjectName("playerRadio")
+        self.playerRadio.setFont(font)
+        self.userType = "P" #monitor if user wants to be a spectator or a player
+
+
         #join button
+        joinFont = QtGui.QFont()
+        joinFont.setFamily("Helvetica")
+        joinFont.setPointSize(20)
+        joinFont.setBold(True)
+        joinFont.setWeight(80)
         self.joinButton = QtWidgets.QPushButton(self.centralwidget)
         self.joinButton.setGeometry(QtCore.QRect(260, 430, 251, 91))
         self.joinButton.setObjectName("joinButton")
-        self.joinButton.setFont(font)
+        self.joinButton.setFont(joinFont)
 
         #fetch button
         self.fetchButton = QtWidgets.QPushButton(self.centralwidget)
