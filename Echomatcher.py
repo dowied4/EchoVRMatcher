@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Echomatcher.ui'
-#
-# Created by: PyQt5 UI code generator 5.9.2
-#
-# WARNING! All changes made in this file will be lost!
+# Author: David Dowie
+# Gui purpose to be able to join matches without the need to wait for invite from party members
+# and to be able to fetch a session id to send to other players to join the match
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -30,6 +28,7 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
         #spectate radio button
         self.spectateRadio = QtWidgets.QRadioButton(self.centralwidget)
         self.spectateRadio.setGeometry(QtCore.QRect(220, 100, 120, 20))
@@ -41,20 +40,30 @@ class Ui_MainWindow(object):
         self.playerRadio.setObjectName("playerRadio")
         self.userType = "P" #monitor if user wants to be a spectator or a player
 
+        #set button font
+        font = QtGui.QFont()
+        font.setFamily("Helvetica")
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(60)
+
         #join button
         self.joinButton = QtWidgets.QPushButton(self.centralwidget)
         self.joinButton.setGeometry(QtCore.QRect(260, 430, 251, 91))
         self.joinButton.setObjectName("joinButton")
+        self.joinButton.setFont(font)
 
         #fetch button
         self.fetchButton = QtWidgets.QPushButton(self.centralwidget)
         self.fetchButton.setGeometry(QtCore.QRect(530, 310, 111, 41))
         self.fetchButton.setObjectName("fetchButton")
+        self.fetchButton.setFont(font)
 
         #entry for match id
         self.matchEntry = QtWidgets.QLineEdit(self.centralwidget)
         self.matchEntry.setGeometry(QtCore.QRect(220, 310, 311, 41))
         self.matchEntry.setObjectName("matchEntry")
+
 
         #entry box for the path for the executable
         self.browseEntry = QtWidgets.QLineEdit(self.centralwidget)
@@ -65,6 +74,7 @@ class Ui_MainWindow(object):
         self.browseButton = QtWidgets.QPushButton(self.centralwidget)
         self.browseButton.setGeometry(QtCore.QRect(530, 200, 111, 41))
         self.browseButton.setObjectName("browseButton")
+        self.browseButton.setFont(font)
 
         #method calls
         self.retranslateUi(MainWindow)
