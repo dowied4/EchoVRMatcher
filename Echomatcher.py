@@ -24,6 +24,9 @@ class Ui_MainWindow(object):
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(340, 290, 140, 16))
         self.label_2.setObjectName("label_2")
+        self.copied = QtWidgets.QLabel(self.centralwidget)
+        self.copied.setGeometry(QtCore.QRect(650, 310, 111, 41))
+        self.copied.setObjectName("copied")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -105,6 +108,8 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "EchoVR Location"))
         self.browseButton.setText(_translate("MainWindow", "Browse"))
         self.label_2.setText(_translate("MainWindow", "Match ID"))
+        self.copied.setText(_translate("MainWindow", "Copied to clipboard"))
+        self.copied.hide()
         self.spectateRadio.setText(_translate("MainWindow", "Spectator"))
         self.playerRadio.setText(_translate("MainWindow", "Player"))
         self.playerRadio.toggle()
@@ -126,14 +131,24 @@ class Ui_MainWindow(object):
     #change userType to Spectator
     def to_play(self):
         self.userType = "P"
+    def set_clipboard(self, data):
+        p = subprocess.Popen(['xclip','-selection','clipboard'], stdin=subprocess.PIPE)
+        p.stdin.write(data)
+        p.stdin.close()
+        retcode = p.wait()
 
     #changes the matchid entry box to hold the sessionid of the current match
     def fetch_id(self):
         try:
+            self.copied.show()
+            pyperclip.copy(self.matchEntry.text())
+
             game_state = echovr_api.fetch_state()
         except:
             return
         print(game_state.sessionid)
+        time.sleep(0.3)
+        self.copied.hide()
         self.matchEntry.setText(game_state.sessionid)
 
     #sets the path of the executable
@@ -159,7 +174,6 @@ class Ui_MainWindow(object):
             else:
                 command = "\"" + self.path + "\""  + " -spectatorstream -http -lobbyid " + self.matchEntry.text()
         return command
-
     #joins match from a passed sessionid
     def join_match(self):
         self.path = self.browseEntry.text()
@@ -182,6 +196,8 @@ class Ui_MainWindow(object):
 if __name__ == "__main__":
     import sys
     import subprocess
+    import pyperclip
+    import time
     import echovr_api
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
