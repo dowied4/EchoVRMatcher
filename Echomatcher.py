@@ -28,10 +28,10 @@ class Ui_MainWindow(object):
         self.joinLabel.setGeometry(QtCore.QRect(580,290,100,20))
         self.joinLabel.setObjectName("joinLabel")
         self.matchIDLabel = QtWidgets.QLabel(self.centralwidget)
-        self.matchIDLabel.setGeometry(QtCore.QRect(100,100,130,50))
+        self.matchIDLabel.setGeometry(QtCore.QRect(100,100,180,50))
         self.matchIDLabel.setObjectName("matchIDLabel")
         self.IDLabel = QtWidgets.QLabel(self.centralwidget)
-        self.IDLabel.setGeometry(QtCore.QRect(220,100,500,50))
+        self.IDLabel.setGeometry(QtCore.QRect(280,100,500,50))
         self.IDLabel.setObjectName("IDLabel")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -142,7 +142,7 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "Target Match ID"))
         self.joinLabel.setText(_translate("MainWindow", "Join As:"))
         self.matchIDLabel.setText(_translate("MainWindow", "Current Match ID: "))
-        self.IDLabel.setText(_translate("MainWindow", "ID Unavailable(make sure you are in a match and launched through EchoVR Matcher)"))
+        self.IDLabel.setText(_translate("MainWindow", "ID Unavailable(please launch through EchoVR Matcher)"))
         self.spectateRadio.setText(_translate("MainWindow", "Spectator"))
         self.playerRadio.setText(_translate("MainWindow", "Player"))
         self.playerRadio.toggle()
@@ -173,7 +173,7 @@ class Ui_MainWindow(object):
             game_state = echovr_api.fetch_state()
             self.IDLabel.setText(game_state.sessionid)
         except:
-            self.IDLabel.setText("ID Unavailable(make sure you are in a match and launched through EchoVR Matcher)")
+            self.IDLabel.setText("ID Unavailable(please launch through EchoVR Matcher)")
     
         
     #changes the matchid entry box to hold the sessionid of the current match
@@ -214,7 +214,7 @@ class Ui_MainWindow(object):
         return command
 
     def launch_game(self):
-        print(self.path)
+        self.path = self.browseEntry.text()
         command = "\"" + self.path + "\"" + " -http"
         if "echovr.exe" in self.path:
             try:
@@ -227,6 +227,7 @@ class Ui_MainWindow(object):
 
     #joins match from a passed sessionid
     def join_match(self):
+        self.path = self.browseEntry.text()
         command = self.get_command()
         if "echovr.exe" in self.path:
             try:
