@@ -33,9 +33,6 @@ class Ui_MainWindow(object):
         self.IDLabel = QtWidgets.QLabel(self.centralwidget)
         self.IDLabel.setGeometry(QtCore.QRect(220,100,500,50))
         self.IDLabel.setObjectName("IDLabel")
-        self.copied = QtWidgets.QLabel(self.centralwidget)
-        self.copied.setGeometry(QtCore.QRect(650, 310, 111, 41))
-        self.copied.setObjectName("copied")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -120,6 +117,7 @@ class Ui_MainWindow(object):
         self.browseButton.setGeometry(QtCore.QRect(360, 200, 111, 41))
         self.browseButton.setObjectName("browseButton")
         self.browseButton.setFont(joinFont)
+        self.browseButton.setToolTip("Select the EchoVR.exe")
 
         #method calls
         self.retranslateUi(MainWindow)
@@ -145,8 +143,6 @@ class Ui_MainWindow(object):
         self.joinLabel.setText(_translate("MainWindow", "Join As:"))
         self.matchIDLabel.setText(_translate("MainWindow", "Current Match ID: "))
         self.IDLabel.setText(_translate("MainWindow", "ID Unavailable(make sure you are in a match and launched through EchoVR Matcher)"))
-        self.copied.setText(_translate("MainWindow", "Copied to clipboard"))
-        self.copied.hide()
         self.spectateRadio.setText(_translate("MainWindow", "Spectator"))
         self.playerRadio.setText(_translate("MainWindow", "Player"))
         self.playerRadio.toggle()
@@ -182,20 +178,26 @@ class Ui_MainWindow(object):
         
     #changes the matchid entry box to hold the sessionid of the current match
     def fetch_id(self):
-        self.copied.show()
         if len(self.IDLabel.text()) == 36:
             pyperclip.copy(self.IDLabel.text())
-        else:
-        self.copied.hide()
+
 
     #sets the path of the executable
     def set_path(self):
         fileName, _= QtWidgets.QFileDialog.getOpenFileName(None, "Select Match ID file","", "exe Files (*.exe)")
+        try:  
+             file = open("pathFile.txt","r")
+             if file.read() == fileName:
+                 return
+        except:
+            pass
         if fileName:
-            self.browseEntry.setText(fileName)
             pathFile = open("pathFile.txt", "w")
             pathFile.write(fileName)
             pathFile.close()
+            self.path = fileName
+            self.browseEntry.setText(fileName)
+        print(self.path)
 
     #gets command based off state of app
     def get_command(self):
@@ -204,7 +206,6 @@ class Ui_MainWindow(object):
                 command = "\"" + self.path + "\"" + " -http"
             else:
                 command = "\"" + self.path + "\""  + " -http -lobbyid " + self.matchEntry.text()
-                print(self.matchEntry)
         else:
             if self.matchEntry.text() == "":
                 command = "\"" + self.path + "\"" + "-spectatorstream -http"
@@ -213,31 +214,27 @@ class Ui_MainWindow(object):
         return command
 
     def launch_game(self):
-        self.path = self.browseEntry.text()
-        if not self.path:
-            self.set_path()
-        if "echovr.exe" not in self.path:
-            self.path + "echovr.exe"
+        print(self.path)
         command = "\"" + self.path + "\"" + " -http"
-        try:
-            subprocess.call('taskkill /IM echovr.exe')
-            subprocess.Popen(command)
-        except:
+        if "echovr.exe" in self.path:
+            try:
+                subprocess.call('taskkill /IM echovr.exe')
+                subprocess.Popen(command)
+            except:
+                self.showError()
+        else:
             self.showError()
 
     #joins match from a passed sessionid
     def join_match(self):
-        self.path = self.browseEntry.text()
-        if not self.path:
-            self.set_path()
-
-        if "echovr.exe" not in self.path:
-            self.path + "echovr.exe"
         command = self.get_command()
-        try:
-            subprocess.call('taskkill /IM echovr.exe')
-            subprocess.Popen(command)
-        except:
+        if "echovr.exe" in self.path:
+            try:
+                subprocess.call('taskkill /IM echovr.exe')
+                subprocess.Popen(command)
+            except:
+                self.showError()
+        else:
             self.showError()
 
 
@@ -254,6 +251,6 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     timer = QtCore.QTimer()
     timer.timeout.connect(ui.poll_id)
-    timer.start(10000)
+    timer.start(5000)
     MainWindow.show()
     sys.exit(app.exec_())
