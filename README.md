@@ -12,6 +12,7 @@ To be able to use the package directly you need two external packages using pip:
 
 ```bash
 pip install PyQt5
+pip install pyperclip
 pip install echovr-api
 ```
 Credit to Ajedi for making the api: https://github.com/Ajedi32/echovr-api
