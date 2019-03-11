@@ -130,7 +130,9 @@ class Ui_MainWindow(object):
         self.spectateRadio.toggled.connect(self.to_spec)
         self.playerRadio.toggled.connect(self.to_play)
         self.clipButton.clicked.connect(self.fetch_id)
-
+        self.emsg = QtWidgets.QErrorMessage()
+        self.emsg.setWindowModality(QtCore.Qt.WindowModal)
+        self.emsg.setWindowTitle("EchoVR.exe not Found!")
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -159,6 +161,9 @@ class Ui_MainWindow(object):
             self.path = "C:\\Program Files\\Oculus\\Software\\Software\\ready-at-dawn-echo-arena\\bin\\win7\\echovr.exe"
         self.browseEntry.setText(_translate("MainWindow",self.path))
 
+    def showError(self):
+       self.emsg.showMessage("EchoVR.exe could not be found. Please enter a valid path!")
+        
     #change userType to spectator
     def to_spec(self):
         self.userType = "S"
@@ -178,12 +183,9 @@ class Ui_MainWindow(object):
     #changes the matchid entry box to hold the sessionid of the current match
     def fetch_id(self):
         self.copied.show()
-        print("attempt to copy")
         if len(self.IDLabel.text()) == 36:
-            print(len(self.IDLabel.text()))
             pyperclip.copy(self.IDLabel.text())
         else:
-            print("invalid")
         self.copied.hide()
 
     #sets the path of the executable
@@ -214,20 +216,14 @@ class Ui_MainWindow(object):
         self.path = self.browseEntry.text()
         if not self.path:
             self.set_path()
-        if "echovr.exe" in self.path:
-            command = "\"" + self.path + "\"" + " -http"
-            try:
-                subprocess.call('taskkill /IM echovr.exe')
-                subprocess.Popen(command)
-                timer = QtCore.QTimer()
-                timer.timeout.connect(MainWindow.poll_id())
-                timer.start(4)
-
-            except:
-                print("unable to run exe")
-        else:
-            print('This is not EchoVR Path')
-
+        if "echovr.exe" not in self.path:
+            self.path + "echovr.exe"
+        command = "\"" + self.path + "\"" + " -http"
+        try:
+            subprocess.call('taskkill /IM echovr.exe')
+            subprocess.Popen(command)
+        except:
+            self.showError()
 
     #joins match from a passed sessionid
     def join_match(self):
@@ -235,17 +231,14 @@ class Ui_MainWindow(object):
         if not self.path:
             self.set_path()
 
-        if "echovr.exe" in self.path:
-            command = self.get_command()
-            try:
-                subprocess.call('taskkill /IM echovr.exe')
-                subprocess.Popen(command)
-                self.poll_id()
-
-            except:
-                print("unable to run exe")
-        else:
-            print('This is not EchoVR Path')
+        if "echovr.exe" not in self.path:
+            self.path + "echovr.exe"
+        command = self.get_command()
+        try:
+            subprocess.call('taskkill /IM echovr.exe')
+            subprocess.Popen(command)
+        except:
+            self.showError()
 
 
 
