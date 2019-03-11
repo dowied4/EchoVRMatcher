@@ -2,7 +2,7 @@
 This is made to connect players faster as the default way of using your friends list is very slow and unreliable. EchoVR Matcher is a way of directly connecting spectators or players to specific matches with no need to way for invites.
 
 ### Download:
-http://www.mediafire.com/file/qc5a089cx7iqdcs/Echomatcher.exe/file
+https://www.mediafire.com/file/o3797ebjcaqotte/EchoVR_Matcher_V1.1.zip/file
 
 ## Usage
 To be able to fetch an id you need to run the exe with -http flag. Hitting launch without having anything in the matchID field will launch the game with this field.
