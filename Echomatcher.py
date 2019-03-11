@@ -19,11 +19,20 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(320, 170, 140, 16))
+        self.label.setGeometry(QtCore.QRect(160, 170, 140, 16))
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(340, 290, 140, 16))
+        self.label_2.setGeometry(QtCore.QRect(160, 280, 140, 16))
         self.label_2.setObjectName("label_2")
+        self.joinLabel = QtWidgets.QLabel(self.centralwidget)
+        self.joinLabel.setGeometry(QtCore.QRect(580,290,100,20))
+        self.joinLabel.setObjectName("joinLabel")
+        self.matchIDLabel = QtWidgets.QLabel(self.centralwidget)
+        self.matchIDLabel.setGeometry(QtCore.QRect(100,100,130,50))
+        self.matchIDLabel.setObjectName("matchIDLabel")
+        self.IDLabel = QtWidgets.QLabel(self.centralwidget)
+        self.IDLabel.setGeometry(QtCore.QRect(220,100,500,50))
+        self.IDLabel.setObjectName("IDLabel")
         self.copied = QtWidgets.QLabel(self.centralwidget)
         self.copied.setGeometry(QtCore.QRect(650, 310, 111, 41))
         self.copied.setObjectName("copied")
@@ -31,6 +40,8 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
+        
 
         #set font
         font = QtGui.QFont()
@@ -40,18 +51,24 @@ class Ui_MainWindow(object):
         font.setWeight(60)
 
         #set label font
+        self.IDLabel.setFont(font)
+
+        #Adjust weight for header
+        font.setWeight(80)
         self.label.setFont(font)
         self.label_2.setFont(font)
+        self.joinLabel.setFont(font)
+        self.matchIDLabel.setFont(font)
 
         #spectate radio button
         self.spectateRadio = QtWidgets.QRadioButton(self.centralwidget)
-        self.spectateRadio.setGeometry(QtCore.QRect(220, 100, 120, 20))
+        self.spectateRadio.setGeometry(QtCore.QRect(500, 320, 120, 20))
         self.spectateRadio.setObjectName("spectateRadio")
         self.spectateRadio.setFont(font)
 
         #player radio button
         self.playerRadio = QtWidgets.QRadioButton(self.centralwidget)
-        self.playerRadio.setGeometry(QtCore.QRect(550, 100, 120, 20))
+        self.playerRadio.setGeometry(QtCore.QRect(650, 320, 120, 20))
         self.playerRadio.setObjectName("playerRadio")
         self.playerRadio.setFont(font)
         self.userType = "P" #monitor if user wants to be a spectator or a player
@@ -63,51 +80,69 @@ class Ui_MainWindow(object):
         joinFont.setPointSize(20)
         joinFont.setBold(True)
         joinFont.setWeight(80)
+        self.launchButton = QtWidgets.QPushButton(self.centralwidget)
+        self.launchButton.setGeometry(QtCore.QRect(260, 430, 251, 91))
+        self.launchButton.setObjectName("launchButton")
+        self.launchButton.setFont(joinFont)
+        self.launchButton.setToolTip('Launches game with -http')
+
+        joinFont.setPointSize(10)
+        #fetch button
         self.joinButton = QtWidgets.QPushButton(self.centralwidget)
-        self.joinButton.setGeometry(QtCore.QRect(260, 430, 251, 91))
+        self.joinButton.setGeometry(QtCore.QRect(360, 310, 111, 41))
         self.joinButton.setObjectName("joinButton")
+        self.joinButton.setFont(font)
+        self.joinButton.setToolTip('Joins match from id')
         self.joinButton.setFont(joinFont)
 
-        #fetch button
-        self.fetchButton = QtWidgets.QPushButton(self.centralwidget)
-        self.fetchButton.setGeometry(QtCore.QRect(530, 310, 111, 41))
-        self.fetchButton.setObjectName("fetchButton")
-        self.fetchButton.setFont(font)
+        #clipboard button
+        self.clipButton = QtWidgets.QPushButton(self.centralwidget)
+        self.clipButton.setGeometry(QtCore.QRect(50, 110, 30, 30))
+        self.clipButton.setObjectName("clipButton")
+        self.clipButton.setIcon(QtGui.QIcon('copy.png'))
+        self.clipButton.setIconSize(QtCore.QSize(24,24))
+        self.clipButton.setToolTip('Copy to Clipboard')
+        
 
         #entry for match id
         self.matchEntry = QtWidgets.QLineEdit(self.centralwidget)
-        self.matchEntry.setGeometry(QtCore.QRect(220, 310, 311, 41))
+        self.matchEntry.setGeometry(QtCore.QRect(50, 310, 300, 41))
         self.matchEntry.setObjectName("matchEntry")
 
 
         #entry box for the path for the executable
         self.browseEntry = QtWidgets.QLineEdit(self.centralwidget)
-        self.browseEntry.setGeometry(QtCore.QRect(220, 200, 311, 41))
+        self.browseEntry.setGeometry(QtCore.QRect(50, 200, 300, 41))
         self.browseEntry.setObjectName("browseEntry")
 
         #button to browse for path
         self.browseButton = QtWidgets.QPushButton(self.centralwidget)
-        self.browseButton.setGeometry(QtCore.QRect(530, 200, 111, 41))
+        self.browseButton.setGeometry(QtCore.QRect(360, 200, 111, 41))
         self.browseButton.setObjectName("browseButton")
-        self.browseButton.setFont(font)
+        self.browseButton.setFont(joinFont)
 
         #method calls
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        self.fetchButton.clicked.connect(self.fetch_id)
-        self.browseButton.clicked.connect(self.set_path)
         self.joinButton.clicked.connect(self.join_match)
+        self.browseButton.clicked.connect(self.set_path)
+        self.launchButton.clicked.connect(self.join_match)
         self.spectateRadio.toggled.connect(self.to_spec)
         self.playerRadio.toggled.connect(self.to_play)
+        self.clipButton.clicked.connect(self.fetch_id)
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.joinButton.setText(_translate("MainWindow", "LAUNCH"))
-        self.fetchButton.setText(_translate("MainWindow", "Get Match ID"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "EchoVR Matcher"))
+        self.launchButton.setText(_translate("MainWindow", "LAUNCH GAME"))
+        self.joinButton.setText(_translate("MainWindow", "Join Match"))
         self.label.setText(_translate("MainWindow", "EchoVR Location"))
         self.browseButton.setText(_translate("MainWindow", "Browse"))
-        self.label_2.setText(_translate("MainWindow", "Match ID"))
+        self.label_2.setText(_translate("MainWindow", "Target Match ID"))
+        self.joinLabel.setText(_translate("MainWindow", "Join As:"))
+        self.matchIDLabel.setText(_translate("MainWindow", "Current Match ID: "))
+        self.IDLabel.setText(_translate("MainWindow", "ID Unavailable(make sure you are in a match and launched through EchoVR Matcher)"))
         self.copied.setText(_translate("MainWindow", "Copied to clipboard"))
         self.copied.hide()
         self.spectateRadio.setText(_translate("MainWindow", "Spectator"))
@@ -131,25 +166,25 @@ class Ui_MainWindow(object):
     #change userType to Spectator
     def to_play(self):
         self.userType = "P"
-    def set_clipboard(self, data):
-        p = subprocess.Popen(['xclip','-selection','clipboard'], stdin=subprocess.PIPE)
-        p.stdin.write(data)
-        p.stdin.close()
-        retcode = p.wait()
 
+    def poll_id(self):
+        try:
+            game_state = echovr_api.fetch_state()
+            self.IDLabel.setText(game_state.sessionid)
+        except:
+            self.IDLabel.setText("ID Unavailable(make sure you are in a match and launched through EchoVR Matcher)")
+    
+        
     #changes the matchid entry box to hold the sessionid of the current match
     def fetch_id(self):
-        try:
-            self.copied.show()
-            pyperclip.copy(self.matchEntry.text())
-
-            game_state = echovr_api.fetch_state()
-        except:
-            return
-        print(game_state.sessionid)
-        time.sleep(0.3)
+        self.copied.show()
+        print("attempt to copy")
+        if len(self.IDLabel.text()) == 36:
+            print(len(self.IDLabel.text()))
+            pyperclip.copy(self.IDLabel.text())
+        else:
+            print("invalid")
         self.copied.hide()
-        self.matchEntry.setText(game_state.sessionid)
 
     #sets the path of the executable
     def set_path(self):
@@ -174,6 +209,26 @@ class Ui_MainWindow(object):
             else:
                 command = "\"" + self.path + "\""  + " -spectatorstream -http -lobbyid " + self.matchEntry.text()
         return command
+
+    def launch_game(self):
+        self.path = self.browseEntry.text()
+        if not self.path:
+            self.set_path()
+        if "echovr.exe" in self.path:
+            command = "\"" + self.path + "\"" + " -http"
+            try:
+                subprocess.call('taskkill /IM echovr.exe')
+                subprocess.Popen(command)
+                timer = QtCore.QTimer()
+                timer.timeout.connect(MainWindow.poll_id())
+                timer.start(4)
+
+            except:
+                print("unable to run exe")
+        else:
+            print('This is not EchoVR Path')
+
+
     #joins match from a passed sessionid
     def join_match(self):
         self.path = self.browseEntry.text()
@@ -185,11 +240,12 @@ class Ui_MainWindow(object):
             try:
                 subprocess.call('taskkill /IM echovr.exe')
                 subprocess.Popen(command)
+                self.poll_id()
 
-            except SystemError as e:
+            except:
                 print("unable to run exe")
         else:
-            raise Exception('This exe is not EchoVR!')
+            print('This is not EchoVR Path')
 
 
 
@@ -203,5 +259,8 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+    timer = QtCore.QTimer()
+    timer.timeout.connect(ui.poll_id)
+    timer.start(10000)
     MainWindow.show()
     sys.exit(app.exec_())
