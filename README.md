@@ -2,7 +2,7 @@
 This is made to connect players faster as the default way of using your friends list is very slow and unreliable. EchoVR Matcher is a way of directly connecting spectators or players to specific matches with no need to way for invites.
 
 ### Download:
-https://www.mediafire.com/file/o3797ebjcaqotte/EchoVR_Matcher_V1.1.zip/file
+https://echo.ddowie.com
 
 ## Usage
 To be able to get the Match ID the game MUST BE IN HTTP mode. Clicking launch from the matcher will launch echovr with the -http flag. The id will always be visible and to be able to send it to other users you just need to hit the adjacent button to copy to clipboard. To be able to join based off an ID you need to put it into the Target Match ID field and click join(make sure you select if you want to join as a spectator or a player). To change the path click browse and find the echovr.exe and click it then click open. 
