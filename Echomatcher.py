@@ -81,7 +81,7 @@ class Ui_MainWindow(object):
         self.launchButton.setGeometry(QtCore.QRect(260, 430, 251, 91))
         self.launchButton.setObjectName("launchButton")
         self.launchButton.setFont(joinFont)
-        self.launchButton.setToolTip('Launches game with -http')
+        self.launchButton.setToolTip('Launches game')
 
         joinFont.setPointSize(10)
         #fetch button
@@ -124,7 +124,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.joinButton.clicked.connect(self.join_match)
         self.browseButton.clicked.connect(self.set_path)
-        self.launchButton.clicked.connect(self.join_match)
+        self.launchButton.clicked.connect(self.launch_game)
         self.spectateRadio.toggled.connect(self.to_spec)
         self.playerRadio.toggled.connect(self.to_play)
         self.clipButton.clicked.connect(self.fetch_id)
@@ -203,19 +203,19 @@ class Ui_MainWindow(object):
     def get_command(self):
         if self.userType == "P":
             if self.matchEntry.text() == "":
-                command = "\"" + self.path + "\"" + " -http"
+                command = "\"" + self.path + "\""
             else:
-                command = "\"" + self.path + "\""  + " -http -lobbyid " + self.matchEntry.text()
+                command = "\"" + self.path + "\""  + " -lobbyid " + self.matchEntry.text()
         else:
             if self.matchEntry.text() == "":
-                command = "\"" + self.path + "\"" + "-spectatorstream -http"
+                command = "\"" + self.path + "\"" + "-spectatorstream"
             else:
-                command = "\"" + self.path + "\""  + " -spectatorstream -http -lobbyid " + self.matchEntry.text()
+                command = "\"" + self.path + "\""  + " -spectatorstream -lobbyid " + self.matchEntry.text()
         return command
 
     def launch_game(self):
         self.path = self.browseEntry.text()
-        command = "\"" + self.path + "\"" + " -http"
+        command = "\"" + self.path + "\""
         if "echovr.exe" in self.path:
             try:
                 subprocess.call('taskkill /IM echovr.exe')
